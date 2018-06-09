@@ -24,5 +24,6 @@ $factory->define(App\User::class, function (Faker $faker) {
 
 $factory->define(App\Sponsorable::class, function (Faker $faker) {
     return [
+        //
     ];
 });
