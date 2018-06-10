@@ -27,3 +27,9 @@ $factory->define(App\Sponsorable::class, function (Faker $faker) {
         //
     ];
 });
+
+$factory->define(App\SponsorableSlot::class, function (Faker $faker) {
+    return [
+        //
+    ];
+});

@@ -3,17 +3,31 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Sponsorable;
+use App\SponsorableSlot;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class NewSponsorshipTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     function viewing_the_new_sponsorship_page()
     {
-        $response = $this->withoutExceptionHandling()->get('full-stack-radio/sponsorships/new');
+        $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
+
+        $sponsorableSlots = new EloquentCollection([
+            factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable]),
+            factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable]),
+            factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable]),
+        ]);
+
+        $response = $this->get('/full-stack-radio/sponsorships/new');
+
         $response->assertSuccessful();
-        $this->assertCount(3, $response->data('sponsorableSlots'));
-        $sponsorableSlots->assertEqual($response->data('sponsorableSlots'));
+        $response->assertTrue($response->data('sponsorable')->is($sponsorable));
+        $sponsorableSlots->assertEquals($response->data('sponsorableSlots'));
     }
 }

@@ -12,6 +12,7 @@ class SponsorableSponsorshipsController extends Controller
         $sponsorable = Sponsorable::findOrFailBySlug($slug);
         $sponsorableSlots = $sponsorable->slots;
         return view('sponsorable-sponsorships.new', [
+            'sponsorable' => $sponsorable,
             'sponsorableSlots' => $sponsorableSlots,
         ]);
     }
