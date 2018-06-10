@@ -30,6 +30,12 @@ $factory->define(App\Sponsorable::class, function (Faker $faker) {
 
 $factory->define(App\SponsorableSlot::class, function (Faker $faker) {
     return [
-        //
+        'publish_date' => now()->addMonth(1),
+    ];
+});
+
+$factory->define(App\Purchase::class, function(Faker $faker){
+    return [
+        // 
     ];
 });
