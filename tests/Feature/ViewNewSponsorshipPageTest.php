@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Purchase;
 use Tests\TestCase;
 use App\Sponsorable;
+use App\Sponsorship;
 use App\SponsorableSlot;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
-class NewSponsorshipTest extends TestCase
+class ViewNewSponsorshipPageTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -43,7 +43,6 @@ class NewSponsorshipTest extends TestCase
         $response = $this->get('/full-stack-radio/sponsorships/new');
 
         $response->assertSuccessful();
-        // $response->assertTrue($response->data('sponsorable')->is($sponsorable));
         $this->assertTrue($response->data('sponsorable')->is($sponsorable));
         $this->assertCount(3, $response->data('sponsorableSlots'));
         $this->assertTrue($response->data('sponsorableSlots')[0]->is($slotC));
@@ -57,13 +56,12 @@ class NewSponsorshipTest extends TestCase
 
         $slotA = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->subDays(10)]);
         $slotB = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->subDays(1)]);
-        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addDays(1)]);
-        $slotD = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addDays(10)]);
+        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonths(1)]);
+        $slotD = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonths(2)]);
 
         $response = $this->get('/full-stack-radio/sponsorships/new');
 
         $response->assertSuccessful();
-        // $response->assertTrue($response->data('sponsorable')->is($sponsorable));
         $this->assertTrue($response->data('sponsorable')->is($sponsorable));
         $this->assertCount(2, $response->data('sponsorableSlots'));
         $this->assertTrue($response->data('sponsorableSlots')[0]->is($slotC));
@@ -73,11 +71,11 @@ class NewSponsorshipTest extends TestCase
     function only_purchable_sponsorable_slots_are_listed()
     {
         $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
-        $purchase = factory(Purchase::class)->create();
+        $sponsorship = factory(Sponsorship::class)->create();
 
         $slotA = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable]);
-        $slotB = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'purchase_id' => $purchase]);
-        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'purchase_id' => $purchase]);
+        $slotB = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'sponsorship_id' => $sponsorship]);
+        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'sponsorship_id' => $sponsorship]);
         $slotD = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable]);
 
         $response = $this->get('/full-stack-radio/sponsorships/new');
